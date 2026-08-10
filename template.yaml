@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  MyExistingApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: com.nfr.MyApiHandler::handleRequest
+      Runtime: java25 # changed to Java 25 to match the Java version in build.gradle
+      MemorySize: 512
+      Timeout: 15
+      Events:
+        HelloWorldApi:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+    Metadata:
+      BuildMethod: gradle

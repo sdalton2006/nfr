@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '4.1.0'
     id 'io.spring.dependency-management' version '1.1.7'
+    // The official, community-maintained Gradle Shadow ID
+    id 'com.gradleup.shadow' version '9.6.1'
 }
 
 group = 'com'
@@ -10,7 +12,7 @@ description = 'nfr'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -22,8 +24,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Standard Lambda core library
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Optional but highly recommended: Forces Gradle to name the fat jar clearly
+shadowJar {
+    archiveClassifier.set('aws') // Appends "-aws" to the output file name
 }

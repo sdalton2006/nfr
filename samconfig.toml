@@ -1,0 +1,22 @@
+version = 0.1
+
+# Global parameters apply to every command. region/profile must live here, not under
+# [default.deploy.parameters], or `sam delete` and `sam validate` fail with
+# "AWS Region was not found".
+[default.global.parameters]
+stack_name = "nfr"
+region = "eu-west-2"
+profile = "simon"
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+confirm_changeset = false
+fail_on_empty_changeset = false
+
+[default.delete.parameters]
+no_prompts = true

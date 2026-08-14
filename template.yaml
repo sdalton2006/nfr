@@ -16,5 +16,7 @@ Resources:
           Properties:
             Path: /hello
             Method: get
-    Metadata:
-      BuildMethod: gradle
+Outputs:
+  HelloWorldApiUrl:
+    Description: Invoke URL for the hello endpoint
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"

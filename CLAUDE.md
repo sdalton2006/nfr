@@ -28,6 +28,7 @@ SAM (`sam` is on PATH at `C:\Program Files\Amazon\AWSSAMCLI\bin\sam.cmd`):
 sam build
 sam deploy                                # create-or-update stack `nfr`, idempotent
 sam delete                                # tear the stack down
+.\delete.ps1                              # tear down all AWS resources, no-op if none exist
 .\recreate.ps1                            # delete + clear .aws-sam + build + deploy
 .\recreate.ps1 -SkipDelete                # build + deploy only
 sam local invoke MyExistingApiFunction    # requires Docker
@@ -67,6 +68,18 @@ https://<ServerlessRestApi-id>.execute-api.eu-west-2.amazonaws.com/Prod/hello
 Do **not** add `Metadata: BuildMethod: gradle` back. It is not a valid `BuildMethod` — SAM accepts only `makefile`, `dotnet`/`dotnet7`, `rust-cargolambda`, `python-uv`, `esbuild`, or a runtime identifier used as an override — and it fails every build with `UnsupportedBuilderException: 'gradle' does not have a supported builder`. Java build tooling is auto-detected from the presence of `build.gradle` / `build.gradle.kts` / `pom.xml`. (`Runtime: java25` is valid; the installed SAM CLI recognizes it.)
 
 ## Tear-down and recreate
+
+### delete.ps1
+
+`.\delete.ps1` is the single-purpose teardown: it removes every AWS resource this project deploys and nothing else. It is a thin wrapper over `sam delete --no-prompts`, which is genuinely all that's needed — deleting the CloudFormation stack takes the Lambda, its IAM role, the `ServerlessRestApi` REST API and both stages with it, plus the build artifacts SAM uploaded to its managed S3 bucket. The script exists rather than a bare `sam delete` because it:
+
+- **Reports an absent stack as success.** Running it twice, or before a first deploy, prints "Nothing to delete" and exits 0 instead of surfacing a CloudFormation error. It matches `does not exist` in the output *before* checking the exit code, since that case is a normal outcome and SAM versions differ on whether they signal it with a non-zero exit.
+- **Sets `$ErrorActionPreference = 'Continue'`, deliberately.** The output is captured with `2>&1` to do that string match, and in PowerShell 5.1 a native exe's stderr merged that way arrives as `ErrorRecord` objects — under `'Stop'` a successful `sam delete` would abort the script.
+- **Passes `--no-prompts` explicitly**, so it stays non-interactive even if `[default.delete.parameters] no_prompts` is removed from `samconfig.toml`.
+
+It takes no arguments: stack name, region and profile all come from `[default.global.parameters]`. Note that it does *not* clear the local `.aws-sam` directory (that's `recreate.ps1`'s job) and cannot remove the leaked CloudWatch log groups described below — the SAM CLI has no CloudWatch Logs command, and neither the AWS CLI nor the AWS Tools for PowerShell modules are installed on this machine.
+
+### recreate.ps1
 
 `.\recreate.ps1` gives a clean cycle, but three things do not round-trip:
 

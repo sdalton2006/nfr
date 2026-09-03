@@ -32,4 +32,7 @@
 | |      Community: https://discord.gg/gk8jAdXWmj                                                                                                                                          |
 | +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+Pre-requisites for BMAD loop skills is psmux and power shell version 7. psmux allows tasks to run on multiple PS terminals and to continue the task is the terminal is stopped.
+
+Next step - try a [small change on BMAD](https://docs.bmad-method.org/existing-codebases/start-in-an-existing-codebase/)
 

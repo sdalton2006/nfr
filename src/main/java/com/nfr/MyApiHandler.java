@@ -24,7 +24,7 @@ public class MyApiHandler implements RequestHandler<Map<String, Object>, Map<Str
 
         // 3. Define your actual payload/body response
         // Using a basic JSON string format
-        response.put("body", "{\"message\": \"Hello World from your single-module Gradle Lambda!\"}");
+        response.put("body", "{\"message\": \"Hello World from MyApiHandler!\"}");
 
         return response;
     }

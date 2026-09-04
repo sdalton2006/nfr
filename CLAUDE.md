@@ -43,7 +43,7 @@ Those commands take no arguments because `samconfig.toml` holds everything: stac
 ### Two unrelated entry points
 
 - `MyApiHandler` — the real Lambda. A plain `RequestHandler<Map<String,Object>, Map<String,Object>>` with **no Spring involvement whatsoever**. It hand-builds the API Gateway proxy response envelope (`statusCode` / `headers` / `body` keys in a `HashMap`, body as a hand-escaped JSON string) rather than using `aws-lambda-java-events` types, which aren't a dependency.
-- `NfrApplication` — vestigial `@SpringBootApplication` `main()` from the Initializr scaffold. Nothing invokes it in the deployed artifact. `NfrApplicationTests` (`@SpringBootTest contextLoads`) tests only this dead path, so a green test run says nothing about whether the Lambda works.
+- `NfrApplication` — vestigial `@SpringBootApplication` `main()` from the Initializr scaffold. Nothing invokes it in the deployed artifact. `NfrApplicationTests` (`@SpringBootTest contextLoads`) tests only this dead path, so it says nothing about whether the Lambda works. `MyApiHandlerTest` is the suite that does: plain JUnit 5 against `handleRequest`, asserting the proxy envelope.
 
 Consequence: adding Spring beans or `application.properties` config has no effect on the deployed function unless you first wire in a Spring-aware adapter. Changes that matter to the Lambda go in `MyApiHandler`.
 

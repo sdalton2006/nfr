@@ -20,16 +20,38 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    // Mockito must be loaded as a JVM agent. Self-attaching still works but is
+    // deprecated and will stop working in a future JDK.
+    mockitoAgent
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     // Standard Lambda core library
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
+
+    // Declared explicitly rather than inherited transitively from
+    // spring-boot-starter-test: the Lambda tests use no Spring at all, so they
+    // should not silently depend on the Spring scaffold. Versions come from the
+    // Spring Boot BOM via io.spring.dependency-management.
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+
+    mockitoAgent('org.mockito:mockito-core') { transitive = false }
 }
+
+// Resolved lazily so the test task stays configuration-cache friendly.
+def mockitoAgentJar = configurations.mockitoAgent.elements
+        .map { it*.asFile*.absolutePath.join(File.pathSeparator) }
 
 tasks.named('test') {
     useJUnitPlatform()
+    jvmArgumentProviders.add({ ["-javaagent:" + mockitoAgentJar.get()] } as CommandLineArgumentProvider)
 }
 
 // Optional but highly recommended: Forces Gradle to name the fat jar clearly

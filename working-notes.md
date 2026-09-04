@@ -40,5 +40,5 @@ The change was to create a unit test for myApiHandler and the template.yaml file
 - Changes have been committed.
 - Mockito was used and learnt.
 - Need to check a bit more on BMAD & Claude folders that are not currently in git.
-- Read the MyApiHanlder test but not read the templates.yaml test yet.
+- Read the MyApiHandler test but not read the templates.yaml test yet.
 - Need to run the unit test again to see if its working.

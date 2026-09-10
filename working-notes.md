@@ -49,3 +49,8 @@ The change was to create a unit test for myApiHandler and the template.yaml file
 - Need to run the unit test again to see if its working.
 - Need to check which skill file was updated to create this unit test.
 
+**10-Sep-26**
+- Archived the BMAD Claude skills at the user level into [g drive folder](https://drive.google.com/open?id=1wXR9xtLVod1Aaf6fcWCjpoh6YuVavHcz&usp=drive_fs) and committted project level Claude BMAD skill files and folders to git
+- All other folders and files needing to be committed to git have been completed
+- Need to run the unit test again to see if its working.
+- Need to check which skill file was updated to create this unit test.
